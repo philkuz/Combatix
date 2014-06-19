@@ -30,6 +30,7 @@ public class CombatState extends BasicGameState
 	public static ArrayList<Integer> unID;//unused IDS
 	public static ArrayList<Entity> bulList;
 	public static ArrayList<Hero> heroList;
+	public static ArrayList<Entity> entList;
 	public Player pl;
 	public static float bgX, bgY;
 	public static Rectangle boundaries;
@@ -40,7 +41,7 @@ public class CombatState extends BasicGameState
 		unID = new ArrayList<Integer>();
 		bulList = new ArrayList<Entity>();
 		heroList = new ArrayList<Hero>();
-		
+		entList = new ArrayList<Entity>();
 	}
 	
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException 
@@ -50,7 +51,7 @@ public class CombatState extends BasicGameState
 		mseY = 0;
 		Hero h = new SimpleAI();
 		h.setLoc(20,20);
-		addHero(h);
+		addEnt(h);
 		//bg = new Image("data/background.jpg");
 		border = 10;
 		bgX = 0;
@@ -63,7 +64,7 @@ public class CombatState extends BasicGameState
 		//bg.draw(bgX, bgY);
 		g.drawString("("+mseX+", "+mseY+")", mseX, mseY);
 		pl.draw();
-		for(Entity e: bulList)
+		/*for(Entity e: bulList)
 		{
 			e.draw();
 		}
@@ -71,8 +72,13 @@ public class CombatState extends BasicGameState
 		{
 			h.draw();
 			g.drawString(""+h.getHealth(), h.getX(), h.getY());
+		}*/
+		for(Entity e: entList)
+		{
+			e.draw();
+			g.drawString(""+e.getHealth(), e.getX(), e.getY());
 		}
-		g.draw(getBounderies());
+		//g.draw(getBounderies());
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException 
@@ -82,6 +88,7 @@ public class CombatState extends BasicGameState
 		mseY = input.getMouseY();
 		pl.control(delta, input);
 		float units = 0.5f*delta;
+		/*
 		for(int x = 0; x < bulList.size(); x++)
 		{
 			Entity e = bulList.get(x);
@@ -91,6 +98,11 @@ public class CombatState extends BasicGameState
 		{
 			Hero h = heroList.get(y);
 			h.update(delta);
+		}*/
+		for(int x = 0; x < entList.size(); x++)
+		{
+			Entity e = entList.get(x);
+			e.update(delta);
 		}
 		if(input.isKeyDown(Input.KEY_W))
 		{
@@ -128,6 +140,8 @@ public class CombatState extends BasicGameState
 				}
 			}
 		}*/
+		//old implementation of for loop when bullet and heros had separate lists
+		/*
 		for(int x = 0; x < bulList.size(); x++)
 		{
 			Entity e = bulList.get(x);
@@ -136,8 +150,22 @@ public class CombatState extends BasicGameState
 				Hero h = heroList.get(y);
 				if(h.intersection(e))
 				{
-					e.hit(h);
+					e.collision(h);
 					break;
+				}
+			}
+		}*/
+		//Combination of hero and bullet list to enable collision detection from prolonged entities
+		//ie walls
+		for(int x=0; x< entList.size(); x++)
+		{
+			Entity e = entList.get(x);
+			for(int y = 0; y < entList.size(); y++)
+			{
+				Entity f = entList.get(y);
+				if((!e.equals(f))&&e.intersection(f))
+				{
+					e.collision(f);
 				}
 			}
 		}
@@ -151,7 +179,7 @@ public class CombatState extends BasicGameState
 	{
 		if(unID.size() == 0)
 		{
-			return bulList.size();
+			return entList.size();
 		}
 		else
 		{
@@ -160,6 +188,18 @@ public class CombatState extends BasicGameState
 			return ret;
 		}
 	}
+	public static void addEnt(Entity e)
+	{
+		int id = entID();
+		e.setID(id);
+		entList.add(e);
+	}
+	public static void delEnt(Entity e)
+	{
+		entList.remove(e);
+		unID.add((Integer)e.getID());
+	}
+	/*//old way of managing entities.
 	public static void addBul(Entity e)
 	{
 		int id = entID();
@@ -170,7 +210,6 @@ public class CombatState extends BasicGameState
 	{
 		heroList.add(h);
 	}
-	//implement binary search
 	public static void delBul(Entity e)
 	{
 		bulList.remove(e);
@@ -178,12 +217,9 @@ public class CombatState extends BasicGameState
 	public static void delHero(Hero h)
 	{
 		heroList.remove(h);
-	}
+	}*/
 	public static Rectangle getBounderies()
 	{
 		return boundaries;
 	}
-	
-	
-	
 }

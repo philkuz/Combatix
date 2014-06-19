@@ -17,6 +17,7 @@ public class Hero extends Entity
 		speed = .25f;
 		setImg(new Image("data/neuron.png"));
 		setHealth(100);
+		setType("hero");
 	}
 	public void attack() throws SlickException
 	{

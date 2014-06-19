@@ -20,7 +20,7 @@ public class Bullet extends Entity
 		this.slope = m;
 		setSpd(0.8f);
 		onScr = true;
-		CombatState.addBul(this);
+		CombatState.addEnt(this);
 		setType("bullet");
 		strength = 10;
 	}
@@ -30,6 +30,14 @@ public class Bullet extends Entity
 		{
 			super.draw();
 		}
+	}
+	public void collision(Entity e)
+	{
+		if(e.ofType("hero"))
+		{
+			e.setHealth(e.getHealth()-strength);
+		}
+		delete();
 	}
 	public void update(int delta)
 	{
@@ -45,7 +53,7 @@ public class Bullet extends Entity
 			float yVel = (float)Math.sin(slope)*getSpeed()*del;
 			move(xVel, yVel);
 		}
-
+		
 	}
 	public void checkScr()
 	{
@@ -75,17 +83,5 @@ public class Bullet extends Entity
 		e.setHealth(e.getHealth()-strength);
 		onScr = false;
 		delete();
-	}
-	public boolean equals(Entity e)
-	{
-		if(e.getID() == this.getID())
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
+	}	
 }

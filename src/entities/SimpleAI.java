@@ -27,10 +27,6 @@ public class SimpleAI extends Default
 		yA[0]=40;yA[1]=240;yA[2]=40;yA[3]=240;
 		count = 3;
 	}
-	public void delete()
-	{
-		CombatState.delHero(this);
-	}
 	public void update(int delta)
 	{
 		randMove(delta);

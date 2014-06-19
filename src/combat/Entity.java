@@ -1,6 +1,7 @@
 package combat;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Rectangle;
@@ -11,21 +12,38 @@ public abstract class Entity
 	
 	private int id;
 	private float x,y;
+	private float health;
 	private float speed;
 	private Shape boundingBox;
 	private Image img;
-	private String type;
+	private ArrayList<String> type;
 	private float dir;
 	
 	public Entity()
 	{
 		speed = .5f;
 		id = -1;
+		type = new ArrayList<String>();
 		setType("entity");
+	}
+	public void collision(Entity e)
+	{
+		
+	}
+	public boolean equals(Entity e)
+	{
+		if(e.getID() == getID())
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	public void delete()
 	{
-		CombatState.delBul(this);
+		CombatState.delEnt(this);
 	}
 	public void move(float dx, float dy)
 	{
@@ -94,7 +112,12 @@ public abstract class Entity
 	}
 	public String getType()
 	{
-		return type;
+		String s = "";
+		for(String cur: type)
+		{
+			s+=cur+" ";
+		}
+		return s;
 	}
 	
 	public String getStrID()
@@ -142,18 +165,25 @@ public abstract class Entity
 	}
 	public void setType(String type)
 	{
-		this.type = type;
+		this.type.add(type);
 	}
 	public boolean sameType(Entity e)
 	{
-		if(e.getType().equals(getType()))
+		for(String s: type)
 		{
-			return true;
+			if(e.getType().contains(s))
+				return true;
 		}
-		else
+		return false;
+	}
+	public boolean ofType(String s)
+	{
+		for(String str: type)
 		{
-			return false;
+			if(str.equals(s))
+				return true;
 		}
+		return false;
 	}
 	public boolean intersection(Entity e)
 	{
@@ -168,5 +198,13 @@ public abstract class Entity
 	}
 	public void hit(Hero e)
 	{
+	}
+	public float getHealth() 
+	{
+		return health;
+	}
+	public void setHealth(float f) 
+	{
+		health = f;
 	}
 }	
