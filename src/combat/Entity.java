@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 
@@ -57,7 +58,7 @@ public abstract class Entity
 	{
 		dir+=deg;
 	}
-	public void update(int delta)
+	public void update(int delta) throws SlickException
 	{
 		
 	}
@@ -137,6 +138,10 @@ public abstract class Entity
 	public float getY()
 	{
 		return y;
+	}
+	public void setDir(float dir)
+	{
+		this.dir = dir;
 	}
 	public void setLoc(float x, float y)
 	{

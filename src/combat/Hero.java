@@ -11,6 +11,7 @@ public class Hero extends Entity
 {
 	private float speed;
 	private float health;
+	private float dif;
 	public Hero() throws SlickException
 	{
 		super();
@@ -18,6 +19,7 @@ public class Hero extends Entity
 		setImg(new Image("data/neuron.png"));
 		setHealth(100);
 		setType("hero");
+		dif = 10;
 	}
 	public void attack() throws SlickException
 	{
@@ -33,7 +35,7 @@ public class Hero extends Entity
 	}
 	public Shape getBoundingBox()
 	{
-		return new Rectangle(getX(), getY(), getWidth(), getHeight());
+		return new Rectangle(getX()+dif, getY()+dif, getWidth()-dif, getHeight()-dif);
 	}
 	public float getHealth()
 	{
@@ -53,6 +55,10 @@ public class Hero extends Entity
 	public void setHealth(float health)
 	{
 		this.health = health;
+	}
+	public void setDif(float differ)
+	{
+		this.dif = differ;
 	}
 	public void setSpd(float spd)
 	{

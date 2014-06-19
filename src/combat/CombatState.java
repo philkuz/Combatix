@@ -52,6 +52,10 @@ public class CombatState extends BasicGameState
 		Hero h = new SimpleAI();
 		h.setLoc(20,20);
 		addEnt(h);
+		SimpleAI l= new SimpleAI();
+		l.setLoc(20,20);
+		addEnt(l);
+		addEnt(pl.getHero());
 		//bg = new Image("data/background.jpg");
 		border = 10;
 		bgX = 0;
@@ -88,58 +92,12 @@ public class CombatState extends BasicGameState
 		mseY = input.getMouseY();
 		pl.control(delta, input);
 		float units = 0.5f*delta;
-		/*
-		for(int x = 0; x < bulList.size(); x++)
-		{
-			Entity e = bulList.get(x);
-			e.update(delta);
-		}
-		for(int y = 0; y < heroList.size(); y++)
-		{
-			Hero h = heroList.get(y);
-			h.update(delta);
-		}*/
+
 		for(int x = 0; x < entList.size(); x++)
 		{
 			Entity e = entList.get(x);
 			e.update(delta);
-		}
-		if(input.isKeyDown(Input.KEY_W))
-		{
-			bgY += -units;
-		}
-		if(input.isKeyDown(Input.KEY_S))
-		{
-			bgY += units;
-		}
-		if(input.isKeyDown(Input.KEY_A))
-		{
-			bgX -= units;
-		}
-		if(input.isKeyDown(Input.KEY_D))
-		{
-			bgX += units;
-		}
-		/*
-		for(int x = 0; x < entList.size(); x++)
-		{
-			Entity e = entList.get(x);
-			if(e.sameType(new Bullet(0,0,0)))
-			{
-				for(int y = 0; y < entList.size(); y++)
-				{
-					if(x != y)
-					{
-						Entity f = entList.get(y);
-						if(e.intersection(f))
-						{
-							e.checkHit(f);
-						}
-					}
-					System.out.println("cunt");
-				}
-			}
-		}*/
+		}		
 		//old implementation of for loop when bullet and heros had separate lists
 		/*
 		for(int x = 0; x < bulList.size(); x++)

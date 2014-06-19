@@ -10,8 +10,8 @@ public class Player
 	final public static float HT = Application.HEIGHT;
 	final public static float WT = Application.WIDTH;
 	private Hero hero;
-	private static int lol;
-	private static boolean chill;
+	private int lol;
+	private boolean chill;
 	private int shotRate = 200;
 	private float turnRate;
 	private Input ipt;
