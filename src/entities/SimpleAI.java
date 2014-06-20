@@ -18,6 +18,7 @@ public class SimpleAI extends Default
 	private int shotRate = 1000;
 	private int curInt;
 	private boolean init;
+	private boolean test;
 	public SimpleAI() throws SlickException
 	{
 		super();
@@ -29,6 +30,7 @@ public class SimpleAI extends Default
 		yA[0]=40;yA[1]=240;yA[2]=40;yA[3]=240;
 		curInt = shotRate;
 		init = true;
+		test = true;
 	}
 	public void update(int delta) throws SlickException
 	{
@@ -120,21 +122,40 @@ public class SimpleAI extends Default
 	}
 	public void randTurn(int delta)
 	{
+		
+		//the problem stems from the radians bs
 		if(getDir() == destT)
 		{
 			destT = (float)(Math.random()*Math.PI*2);
-			if(destT-getDir() > Math.PI )
+			float sepa = destT-getDir();
+			if(sepa > Math.PI ||(sepa < 0 && sepa > -Math.PI))
 				angleDir = -1;
 			else
 				angleDir = 1;
 		}
 		dT = angleDir*aV*delta;
-		if(angleDir == 1 && getDir()+dT > destT||angleDir == -1 && getDir()+ dT < destT)
+		if((angleDir == 1 && (getDir()+ dT)%(2*Math.PI) > destT))
 		{
+			if(Math.abs(destT-getDir())>0.0425)
+			{
+				System.out.println("Jump--Dest: " +destT + " cur: "+getDir()+" dt: "+dT+ " CONDITION 1");
+
+			}
 			setDir(destT);
 			dT = 0;
 		}
-		turn(dT);		
+		else if((angleDir == -1 && (getDir()+ dT)%(2*Math.PI) < destT))
+		{
+			if(Math.abs(destT-getDir())>0.0425)
+			{
+				System.out.println("Jump--Dest: " +destT + " cur: "+getDir()+" dt: "+dT+ " CONDITION 2 ");
+
+			}
+			setDir(destT);
+			
+			dT = 0;
+		}
+		turn(dT);	
 	}
 	public void drawTravel(Graphics g)
 	{

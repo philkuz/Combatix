@@ -35,5 +35,6 @@ public class Application extends StateBasedGame
 		}catch(SlickException e){
 			e.printStackTrace();
 		}
+		
 	}
 }
