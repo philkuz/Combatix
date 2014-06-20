@@ -34,7 +34,6 @@ public class SimpleAI extends Default
 	}
 	public void update(int delta) throws SlickException
 	{
-		randMove(delta);
 		randTurn(delta);
 		orient();
 		//default implementation
@@ -50,7 +49,8 @@ public class SimpleAI extends Default
 		else
 			curInt+=delta;
 	}
-	//movement to encapsulate the random 2D movement.
+	//movement to encapsulate the random lateral 2D movement (movement comparable to that
+	//of lateral adj in Player.java. Extremely buggy and not in use.
 	public void randMove(int delta)
 	{
 		if(init)
@@ -120,9 +120,10 @@ public class SimpleAI extends Default
 			dy = cur*(float)Math.sin(degree);
 		move(dx, dy);
 	}
+	//Movement relying on random angle directions, but travelling in the direction faced.
+	//so far no bugs. :) (Uses the Player.angleAdj() method of movement)
 	public void randTurn(int delta)
 	{
-		
 		//the problem stems from the radians bs
 		if(getDir() == destT)
 		{
@@ -134,7 +135,7 @@ public class SimpleAI extends Default
 				angleDir = 1;
 		}
 		dT = angleDir*aV*delta;
-		if((angleDir == 1 && (getDir()+ dT)%(2*Math.PI) > destT))
+		/*if((angleDir == 1 && (getDir()+ dT)%(2*Math.PI) > destT))
 		{
 			if(Math.abs(destT-getDir())>0.0425)
 			{
@@ -154,12 +155,28 @@ public class SimpleAI extends Default
 			setDir(destT);
 			
 			dT = 0;
+		}*/
+		if(angle(getDir()-destT)<Math.abs(dT))
+		{
+			setDir(destT);
+			dT = 0;
 		}
-		turn(dT);	
+		turn(dT);
+		float spd = speed*delta;
+		move((float)Math.cos(getDir())*spd, (float)Math.sin(getDir())*spd);
 	}
 	public void drawTravel(Graphics g)
 	{
 		g.drawLine(getX(), getY(), destX, destY);
+	}
+	public float angle(float angle)
+	{
+		while(angle < 0)
+		{
+			angle += Math.PI*2;
+		}
+		angle %= Math.PI*2;
+		return angle;
 	}
 
 }
