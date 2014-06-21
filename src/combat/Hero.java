@@ -12,6 +12,7 @@ public class Hero extends Entity
 	private float speed;
 	private float health;
 	private float dif;
+	private boolean player;
 	public Hero() throws SlickException
 	{
 		super();
@@ -20,6 +21,7 @@ public class Hero extends Entity
 		setHealth(100);
 		setType("hero");
 		dif = 10;
+		player = false;
 	}
 	public void attack() throws SlickException
 	{
@@ -64,4 +66,20 @@ public class Hero extends Entity
 	{
 		speed = spd;
 	}
+	/*
+	public void draw()
+	{
+		if(player)
+			draw(getX(), getY());
+		else
+			super.draw();
+	}*/
+	public void togglePlayer()
+	{
+		if(player)
+			player = false;
+		else
+			player = true;
+	}
+	
 }

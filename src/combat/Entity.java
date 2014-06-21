@@ -69,11 +69,20 @@ public abstract class Entity
 	
 	public void draw()
 	{
-		img.draw(x,y);
+		img.draw(x-CombatState.cX,y-CombatState.cY);
+	}
+	public void draw(float x, float y)
+	{
+		img.draw(x, y);
 	}
 	public Shape getBoundingBox()
 	{
 		return boundingBox;
+	}
+	public Shape getCamBox()
+	{
+		Shape r = getBoundingBox();
+		return new Rectangle(r.getX()-CombatState.getCX(), r.getY()-CombatState.getCY(), r.getWidth(), r.getHeight());
 	}
 	public float getCX()
 	{
@@ -82,6 +91,14 @@ public abstract class Entity
 	public float getCY()
 	{
 		return y+img.getHeight()/2;
+	}
+	public float getCamX()
+	{
+		return getX()-CombatState.getCX();
+	}
+	public float getCamY()
+	{
+		return getY()-CombatState.getCY();
 	}
 	public float getDir()
 	{

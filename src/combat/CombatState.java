@@ -17,10 +17,10 @@ import entities.*;
 public class CombatState extends BasicGameState
 {
 	//HT and WT are the dimensions of the "world" CAMHT and CAMWT are the camera dimensions
-	final public static float HT = Application.HEIGHT;
-	final public static float WT = Application.WIDTH;
-	final public static float CAMWT = Application.HEIGHT;
-	final public static float CAMHT = Application.WIDTH;
+	public static float HT = Application.HEIGHT*4;
+	public static float WT = Application.WIDTH*4;
+	final public static float CAMHT = Application.HEIGHT;
+	final public static float CAMWT = Application.WIDTH;
 	
 	public static float border;
 	public Image bg;
@@ -33,7 +33,8 @@ public class CombatState extends BasicGameState
 	public static ArrayList<Entity> entList;
 	public Player pl;
 	public static float bgX, bgY;
-	public static Rectangle boundaries;
+	public static Rectangle boundaries, camBound;
+	public static float cX, cY;//Camera location.
 	
 	public CombatState(int state)
 	{
@@ -49,6 +50,10 @@ public class CombatState extends BasicGameState
 		pl = new Player();
 		mseX = 0;
 		mseY = 0;
+		Background bg = new Background();
+		addEnt(bg);
+		WT = bg.getWidth();
+		HT = bg.getHeight();
 		Hero h = new SimpleAI();
 		h.setLoc(20,20);
 		addEnt(h);
@@ -56,11 +61,14 @@ public class CombatState extends BasicGameState
 		l.setLoc(20,20);
 		addEnt(l);
 		addEnt(pl.getHero());
-		//bg = new Image("data/background.jpg");
+		
+		
+		
 		border = 10;
 		bgX = 0;
 		bgY = 0;
-		boundaries = new Rectangle(border, border, WT-border, HT-border);
+		boundaries = new Rectangle(border, border, WT-border*2, HT-border*2);
+		camBound = new Rectangle(100,100,CAMWT-100*2, CAMHT-100*2);
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
@@ -80,9 +88,10 @@ public class CombatState extends BasicGameState
 		for(Entity e: entList)
 		{
 			e.draw();
-			g.drawString(""+e.getHealth(), e.getX(), e.getY());
+			g.drawString(""+e.getHealth(), e.getCamX(), e.getCamY());
 		}
-		//g.draw(getBounderies());
+		g.draw(camBound);
+		g.draw(boundaries);
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException 
@@ -115,6 +124,31 @@ public class CombatState extends BasicGameState
 		}*/
 		//Combination of hero and bullet list to enable collision detection from prolonged entities
 		//ie walls
+		Hero h = pl.getHero();
+		if(!h.getCamBox().intersects(camBound))
+		{
+			System.out.println("true");
+			if(h.getX()<camBound.getX())
+			{
+				cX -= 0.1f*delta;
+			}
+			else if(h.getX()+h.getWidth()>camBound.getX()+camBound.getWidth())
+			{
+				cX += 0.1f*delta; 
+			}
+			if(h.getY() < camBound.getY())
+			{
+				cY -= 0.1f*delta;
+			}
+			else if(h.getY()+h.getHeight()>camBound.getY()+camBound.getHeight())
+			{
+				cX += 0.1f*delta; 
+			}
+		}
+		if(input.isKeyDown(Input.KEY_S))
+		{
+			cY -= 0.1f*delta;
+		}
 		for(int x=0; x< entList.size(); x++)
 		{
 			Entity e = entList.get(x);
@@ -179,5 +213,15 @@ public class CombatState extends BasicGameState
 	public static Rectangle getBounderies()
 	{
 		return boundaries;
+	}
+	//Camera x coordinate, not to be confused with center coordinate
+	public static float getCX()
+	{
+		return cX;
+	}
+	//Camera y coordiante, not to be confused with center coordinate
+	public static float getCY()
+	{
+		return cY;
 	}
 }

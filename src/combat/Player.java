@@ -20,6 +20,7 @@ public class Player
 		hero = new Default();
 		hero.setX(20);
 		hero.setY(20);
+		hero.togglePlayer();
 		lol = shotRate;
 		chill = false;
 		turnRate = 0.0075f;
