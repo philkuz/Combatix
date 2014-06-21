@@ -157,6 +157,14 @@ public class Player
 				hero.setY(border);
 		}
 	}
+	public void draw()
+	{
+		hero.draw();
+	}
+	public float getSpeed()
+	{
+		return hero.getSpd();
+	}
 	public String getHealth()
 	{
 		String health = ""+hero.getHealth();
@@ -170,8 +178,5 @@ public class Player
 	{
 		return hero.getY();
 	}
-	public void draw()
-	{
-		hero.draw();
-	}
+	
 }

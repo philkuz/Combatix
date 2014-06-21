@@ -42,6 +42,10 @@ public abstract class Entity
 			return false;
 		}
 	}
+	public boolean collidable()
+	{
+		return true;
+	}
 	public void delete()
 	{
 		CombatState.delEnt(this);
@@ -123,6 +127,10 @@ public abstract class Entity
 	public int getID()
 	{
 		return id;
+	}
+	public Image getImg()
+	{
+		return img;
 	}
 	public float getSpeed()
 	{

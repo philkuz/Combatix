@@ -34,7 +34,8 @@ public class CombatState extends BasicGameState
 	public Player pl;
 	public static float bgX, bgY;
 	public static Rectangle boundaries, camBound;
-	public static float cX, cY;//Camera location.
+	public float buf;
+	public static float cX, cY, dXC, dYC;//Camera location.
 	
 	public CombatState(int state)
 	{
@@ -54,12 +55,13 @@ public class CombatState extends BasicGameState
 		addEnt(bg);
 		WT = bg.getWidth();
 		HT = bg.getHeight();
-		Hero h = new SimpleAI();
-		h.setLoc(20,20);
-		addEnt(h);
-		SimpleAI l= new SimpleAI();
-		l.setLoc(20,20);
-		addEnt(l);
+		for(int x = 0; x < 10; x++)
+		{
+			SimpleAI l = new SimpleAI();
+			l.setLoc((float)Math.random()*WT, (float)Math.random()*HT);
+			addEnt(l);
+		}
+		
 		addEnt(pl.getHero());
 		
 		
@@ -67,31 +69,21 @@ public class CombatState extends BasicGameState
 		border = 10;
 		bgX = 0;
 		bgY = 0;
+		buf = 150;
 		boundaries = new Rectangle(border, border, WT-border*2, HT-border*2);
-		camBound = new Rectangle(100,100,CAMWT-100*2, CAMHT-100*2);
+		camBound = new Rectangle(buf,buf,CAMWT-buf*2, CAMHT-buf*2);
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
 	{
-		//bg.draw(bgX, bgY);
 		g.drawString("("+mseX+", "+mseY+")", mseX, mseY);
 		pl.draw();
-		/*for(Entity e: bulList)
-		{
-			e.draw();
-		}
-		for(Hero h: heroList)
-		{
-			h.draw();
-			g.drawString(""+h.getHealth(), h.getX(), h.getY());
-		}*/
 		for(Entity e: entList)
 		{
 			e.draw();
 			g.drawString(""+e.getHealth(), e.getCamX(), e.getCamY());
 		}
-		g.draw(camBound);
-		g.draw(boundaries);
+		//g.draw(camBound);
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException 
@@ -107,47 +99,53 @@ public class CombatState extends BasicGameState
 			Entity e = entList.get(x);
 			e.update(delta);
 		}		
-		//old implementation of for loop when bullet and heros had separate lists
-		/*
-		for(int x = 0; x < bulList.size(); x++)
-		{
-			Entity e = bulList.get(x);
-			for(int y = 0; y < heroList.size(); y++)
-			{
-				Hero h = heroList.get(y);
-				if(h.intersection(e))
-				{
-					e.collision(h);
-					break;
-				}
-			}
-		}*/
 		//Combination of hero and bullet list to enable collision detection from prolonged entities
 		//ie walls
 		Hero h = pl.getHero();
 		if(!h.getCamBox().intersects(camBound))
 		{
-			System.out.println("true");
-			if(h.getX()<camBound.getX())
+			float spd = h.getSpd()*delta;
+			dXC = (float)Math.cos(Math.PI/4)*spd;
+			dYC = (float)Math.sin(Math.PI/4)*spd;
+			//System.out.println("true");
+			if(h.getX()<cX+buf&&cX>0)
 			{
-				cX -= 0.1f*delta;
+				System.out.print("Left");
+				cX -= dXC;
+				if(cX<0)
+				{
+					cX = 0;
+				}
 			}
-			else if(h.getX()+h.getWidth()>camBound.getX()+camBound.getWidth())
+			if(h.getX()+h.getWidth()>cX+camBound.getWidth()&&cX<WT-CAMWT)
 			{
-				cX += 0.1f*delta; 
+				System.out.print("Right");
+				cX += dXC;
+				if(cX+CAMWT>WT)
+				{
+					cX = WT-CAMWT;
+				}
 			}
-			if(h.getY() < camBound.getY())
+			if(h.getY() < cY+buf&&cY>0)
 			{
-				cY -= 0.1f*delta;
+				System.out.print("Up");
+			
+				cY -= dYC;
+				if(cY<0)
+				{
+					cY = 0;
+				}
 			}
-			else if(h.getY()+h.getHeight()>camBound.getY()+camBound.getHeight())
+			if(h.getY()+h.getHeight()>cY+camBound.getHeight()&&cY<HT-CAMHT)
 			{
-				cX += 0.1f*delta; 
+				cY += dYC;
+				System.out.print("Down");
+				if(cY+CAMHT>HT)
+				{
+					cY = HT-CAMHT;
+				}
 			}
-		}
-		if(input.isKeyDown(Input.KEY_S))
-		{
-			cY -= 0.1f*delta;
+			System.out.println();
 		}
 		for(int x=0; x< entList.size(); x++)
 		{
@@ -155,9 +153,12 @@ public class CombatState extends BasicGameState
 			for(int y = 0; y < entList.size(); y++)
 			{
 				Entity f = entList.get(y);
-				if((!e.equals(f))&&e.intersection(f))
+				if(e.collidable()&&f.collidable())
 				{
-					e.collision(f);
+					if((!e.equals(f))&&e.intersection(f))
+					{
+						e.collision(f);
+					}
 				}
 			}
 		}
@@ -191,25 +192,6 @@ public class CombatState extends BasicGameState
 		entList.remove(e);
 		unID.add((Integer)e.getID());
 	}
-	/*//old way of managing entities.
-	public static void addBul(Entity e)
-	{
-		int id = entID();
-		e.setID(id);
-		bulList.add(e);
-	}
-	public static void addHero(Hero h)
-	{
-		heroList.add(h);
-	}
-	public static void delBul(Entity e)
-	{
-		bulList.remove(e);
-	}
-	public static void delHero(Hero h)
-	{
-		heroList.remove(h);
-	}*/
 	public static Rectangle getBounderies()
 	{
 		return boundaries;

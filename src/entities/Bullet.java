@@ -12,6 +12,8 @@ public class Bullet extends Entity
 	private float strength;
 	public boolean onScr;
 
+	//m = direction facing, x and y are cartesian starting coordinates, and ID is the id of the source object
+	
 	public Bullet(float m, float x, float y) throws SlickException
 	{
 		setImg((new Image("data/neuron.png")).getScaledCopy(.2f));
