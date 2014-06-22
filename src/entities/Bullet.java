@@ -11,10 +11,11 @@ public class Bullet extends Entity
 	private double slope;
 	private float strength;
 	public boolean onScr;
+	private int source;
 
 	//m = direction facing, x and y are cartesian starting coordinates, and ID is the id of the source object
 	
-	public Bullet(float m, float x, float y) throws SlickException
+	public Bullet(float m, float x, float y, float attack, int src) throws SlickException
 	{
 		setImg((new Image("data/neuron.png")).getScaledCopy(.2f));
 		setX(x-getWidth()/2);
@@ -24,7 +25,8 @@ public class Bullet extends Entity
 		onScr = true;
 		CombatState.addEnt(this);
 		setType("bullet");
-		strength = 10;
+		source = src;
+		strength = attack;
 	}
 	public void draw()
 	{
@@ -38,6 +40,8 @@ public class Bullet extends Entity
 		if(e.ofType("hero"))
 		{
 			e.setHealth(e.getHealth()-strength);
+			System.out.println(e.getHealth());
+			((Hero)e).addCol(source);
 		}
 		delete();
 	}

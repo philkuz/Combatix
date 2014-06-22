@@ -1,5 +1,8 @@
 package combat;
 
+import java.util.ArrayList;
+
+import org.lwjgl.util.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -9,7 +12,6 @@ import org.newdawn.slick.geom.Shape;
 
 public class Hero extends Entity
 {
-	private float health;
 	private float maxHealth;
 	private float dif;
 	private boolean player;
@@ -18,6 +20,7 @@ public class Hero extends Entity
 	private float defense;
 	private float xp;
 	private int level;
+	private ArrayList<Integer> colList;
 	
 	public Hero() throws SlickException
 	{
@@ -34,10 +37,20 @@ public class Hero extends Entity
 		defense = 10;
 		xp = 0;
 		player = false;
+		colList = new ArrayList<Integer>();
 	}
 	public void attack() throws SlickException
 	{
 		
+	}
+	public void addCol(int id)
+	{
+		colList.remove((Integer)id);
+		colList.add(id);
+	}
+	public void addXp(float exp)
+	{
+		xp +=exp;
 	}
 	public void checkXP()
 	{
@@ -54,10 +67,6 @@ public class Hero extends Entity
 	{
 		
 	}
-	public void health(float amt)
-	{
-		health += amt;
-	}
 	public void levelUp()
 	{
 		attack += 3;
@@ -69,17 +78,13 @@ public class Hero extends Entity
 	{
 		return new Rectangle(getX()+dif, getY()+dif, getWidth()-dif, getHeight()-dif);
 	}
-	public float getHealth()
-	{
-		return health;
-	}
 	public float getMaxHealth()
 	{
 		return maxHealth;
 	}
 	public float getHealthRatio()
 	{
-		return health/maxHealth;
+		return getHealth()/maxHealth;
 	}
 	public float getAtk()
 	{
@@ -99,7 +104,7 @@ public class Hero extends Entity
 	}
 	public float getSpd()
 	{
-		return agility*2.5f;
+		return agility*.025f;
 	}
 	public float getXP()
 	{
@@ -107,14 +112,36 @@ public class Hero extends Entity
 	}
 	public boolean isAlive()
 	{
-		if(health > 0)
+		if(getHealth()> 0)
+		{
 			return true;
+		}
 		else
+		{
+			int x = 1;
+			while(true)
+			{
+				Entity e = CombatState.entList.get(CombatState.search(colList.get(colList.size()-x)));
+				if(e.ofType("hero"))
+				{
+					Hero h = (Hero)e;
+					h.addXp(xp);
+					break;
+				}
+				if(x == colList.size())
+				{
+					break;
+				}
+				x++;//has to be placed after the size check to make sure the loop isn't ended prematurely.
+			}
 			return false;
+		}
 	}
-	public void setHealth(float health)
+	public void setColor(Color cl)
 	{
-		this.health = health;
+		Image img = getImg();
+		img.setImageColor(cl.getRed(), cl.getGreen(), cl.getBlue());
+		setImg(img);
 	}
 	public void setDif(float differ)
 	{

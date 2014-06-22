@@ -52,7 +52,7 @@ public class CombatState extends BasicGameState
 		addEnt(bg);
 		WT = bg.getWidth();
 		HT = bg.getHeight();
-		for(int x = 0; x < 10; x++)
+		for(int x = 0; x < 15; x++)
 		{
 			SimpleAI l = new SimpleAI();
 			l.setLoc((float)Math.random()*WT, (float)Math.random()*HT);
@@ -78,14 +78,17 @@ public class CombatState extends BasicGameState
 			//g.drawString(""+e.getHealth(), e.getCamX(), e.getCamY());
 		}
 		g.setColor(Color.gray);
-		g.fill(new Rectangle(CAMWT-120,20, 100,90));
+		g.fill(new Rectangle(CAMWT-120,20, 100,105));
 		g.setColor(Color.white);
-		g.drawString("Level: "+pl.getHero().getLevel(), CAMWT-110, 30);
-		g.drawString("XP: "+pl.getHero().getXP(), CAMWT-110, 50);
+		g.drawString("Level: "+pl.getHero().getLevel(), CAMWT-110, 25);
+		g.drawString("XP: "+pl.getHero().getXP(), CAMWT-110, 60);
+		g.drawString("Atk: "+pl.getHero().getAtk(), CAMWT-110, 75);
+		g.drawString("Agl: "+pl.getHero().getAgl(), CAMWT-110, 90);
+		g.drawString("Def: "+pl.getHero().getDef(), CAMWT-110, 105);
 		g.setColor(Color.red);
-		g.fill(new Rectangle(CAMWT-110, 80,80, 30));
+		g.fill(new Rectangle(CAMWT-110, 45,80, 15));
 		g.setColor(Color.green);
-		g.fill(new Rectangle(CAMWT-110, 80, pl.getHero().getHealthRatio()*80, 30));
+		g.fill(new Rectangle(CAMWT-110, 45, pl.getHero().getHealthRatio()*80, 15));
 		
 		//g.draw(camBound);
 	}
@@ -181,7 +184,10 @@ public class CombatState extends BasicGameState
 	{
 		int id = entID();
 		e.setID(id);
-		entList.add(e);
+		if(id < entList.size())
+			entList.add(id, e);
+		else
+			entList.add(e);
 	}
 	public static void delEnt(Entity e)
 	{
@@ -201,5 +207,33 @@ public class CombatState extends BasicGameState
 	public static float getCY()
 	{
 		return cY;
+	}
+	public static void credit(int id, float xp)
+	{
+		Entity e = entList.get(search(id));
+		if(e.ofType("hero"))
+		{
+			Hero h = (Hero)e;
+			h.addXp(xp);	
+		}
+	}
+	public static int search(int id)
+	{
+		int idx = 0;
+		int curID = entList.get(0).getID();
+		
+		while(curID<id)
+		{
+			idx++;
+			curID = entList.get(idx).getID();
+		}
+		if(curID == id)
+		{
+			return id;
+		}
+		else
+		{
+			return -1;
+		}
 	}
 }

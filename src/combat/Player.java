@@ -34,6 +34,7 @@ public class Player
 		this.ipt = ipt;
 		float spd = hero.getSpd()*delta;
 		lol+=delta;
+		hero.checkXP();
 		//Traditional movement implementation
 		/**/
 		angleAdj(delta, spd);
