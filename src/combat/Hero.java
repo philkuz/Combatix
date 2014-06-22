@@ -9,23 +9,46 @@ import org.newdawn.slick.geom.Shape;
 
 public class Hero extends Entity
 {
-	private float speed;
 	private float health;
+	private float maxHealth;
 	private float dif;
 	private boolean player;
+	private float attack;
+	private float agility;
+	private float defense;
+	private float xp;
+	private int level;
+	
 	public Hero() throws SlickException
 	{
 		super();
-		speed = .25f;
+		setSpd(.25f);
 		setImg(new Image("data/neuron.png"));
 		setHealth(100);
+		maxHealth = 100;
 		setType("hero");
 		dif = 10;
+		level = 1;
+		attack = 10;
+		agility = 10;
+		defense = 10;
+		xp = 0;
 		player = false;
 	}
 	public void attack() throws SlickException
 	{
 		
+	}
+	public void checkXP()
+	{
+		if(xp>Math.pow(1.5, level)+9.5)
+		{
+			levelUp();
+		}
+	}
+	public void update(int delta) throws SlickException
+	{
+		checkXP();
 	}
 	public void drawTravel(Graphics g)
 	{
@@ -35,6 +58,13 @@ public class Hero extends Entity
 	{
 		health += amt;
 	}
+	public void levelUp()
+	{
+		attack += 3;
+		agility += 3;
+		defense += 3;
+		level += 1;
+	}
 	public Shape getBoundingBox()
 	{
 		return new Rectangle(getX()+dif, getY()+dif, getWidth()-dif, getHeight()-dif);
@@ -43,9 +73,37 @@ public class Hero extends Entity
 	{
 		return health;
 	}
+	public float getMaxHealth()
+	{
+		return maxHealth;
+	}
+	public float getHealthRatio()
+	{
+		return health/maxHealth;
+	}
+	public float getAtk()
+	{
+		return attack;
+	}
+	public float getDef()
+	{
+		return defense;
+	}
+	public float getAgl()
+	{
+		return agility;
+	}
+	public int getLevel()
+	{
+		return level;
+	}
 	public float getSpd()
 	{
-		return speed;
+		return agility*2.5f;
+	}
+	public float getXP()
+	{
+		return xp;
 	}
 	public boolean isAlive()
 	{
@@ -62,18 +120,18 @@ public class Hero extends Entity
 	{
 		this.dif = differ;
 	}
-	public void setSpd(float spd)
+	public void setAtk(float atk)
 	{
-		speed = spd;
+		attack = atk;
 	}
-	/*
-	public void draw()
+	public void setDef(float def)
 	{
-		if(player)
-			draw(getX(), getY());
-		else
-			super.draw();
-	}*/
+		defense = def;
+	}
+	public void setAgl(float agl)
+	{
+		agility = agl;
+	}
 	public void togglePlayer()
 	{
 		if(player)
@@ -81,5 +139,4 @@ public class Hero extends Entity
 		else
 			player = true;
 	}
-	
 }

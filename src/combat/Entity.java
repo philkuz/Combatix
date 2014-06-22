@@ -132,7 +132,7 @@ public abstract class Entity
 	{
 		return img;
 	}
-	public float getSpeed()
+	public float getSpd()
 	{
 		return speed;
 	}

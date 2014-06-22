@@ -3,6 +3,7 @@ package combat;
 
 import java.util.ArrayList;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -27,9 +28,7 @@ public class CombatState extends BasicGameState
 	public Image img;
 	int state;
 	public static float mseX, mseY;
-	public static ArrayList<Integer> unID;//unused IDS
-	public static ArrayList<Entity> bulList;
-	public static ArrayList<Hero> heroList;
+	public static ArrayList<Integer> unID;//unused IDs
 	public static ArrayList<Entity> entList;
 	public Player pl;
 	public static float bgX, bgY;
@@ -41,8 +40,6 @@ public class CombatState extends BasicGameState
 	{
 		this.state = state;
 		unID = new ArrayList<Integer>();
-		bulList = new ArrayList<Entity>();
-		heroList = new ArrayList<Hero>();
 		entList = new ArrayList<Entity>();
 	}
 	
@@ -61,11 +58,8 @@ public class CombatState extends BasicGameState
 			l.setLoc((float)Math.random()*WT, (float)Math.random()*HT);
 			addEnt(l);
 		}
-		
 		addEnt(pl.getHero());
-		
-		
-		
+				
 		border = 10;
 		bgX = 0;
 		bgY = 0;
@@ -76,13 +70,23 @@ public class CombatState extends BasicGameState
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
 	{
-		g.drawString("("+mseX+", "+mseY+")", mseX, mseY);
+		//g.drawString("("+mseX+", "+mseY+")", mseX, mseY);
 		pl.draw();
 		for(Entity e: entList)
 		{
 			e.draw();
-			g.drawString(""+e.getHealth(), e.getCamX(), e.getCamY());
+			//g.drawString(""+e.getHealth(), e.getCamX(), e.getCamY());
 		}
+		g.setColor(Color.gray);
+		g.fill(new Rectangle(CAMWT-120,20, 100,90));
+		g.setColor(Color.white);
+		g.drawString("Level: "+pl.getHero().getLevel(), CAMWT-110, 30);
+		g.drawString("XP: "+pl.getHero().getXP(), CAMWT-110, 50);
+		g.setColor(Color.red);
+		g.fill(new Rectangle(CAMWT-110, 80,80, 30));
+		g.setColor(Color.green);
+		g.fill(new Rectangle(CAMWT-110, 80, pl.getHero().getHealthRatio()*80, 30));
+		
 		//g.draw(camBound);
 	}
 
@@ -92,8 +96,6 @@ public class CombatState extends BasicGameState
 		mseX = input.getMouseX();
 		mseY = input.getMouseY();
 		pl.control(delta, input);
-		float units = 0.5f*delta;
-
 		for(int x = 0; x < entList.size(); x++)
 		{
 			Entity e = entList.get(x);
@@ -110,7 +112,6 @@ public class CombatState extends BasicGameState
 			//System.out.println("true");
 			if(h.getX()<cX+buf&&cX>0)
 			{
-				System.out.print("Left");
 				cX -= dXC;
 				if(cX<0)
 				{
@@ -119,7 +120,6 @@ public class CombatState extends BasicGameState
 			}
 			if(h.getX()+h.getWidth()>cX+camBound.getWidth()&&cX<WT-CAMWT)
 			{
-				System.out.print("Right");
 				cX += dXC;
 				if(cX+CAMWT>WT)
 				{
@@ -128,8 +128,6 @@ public class CombatState extends BasicGameState
 			}
 			if(h.getY() < cY+buf&&cY>0)
 			{
-				System.out.print("Up");
-			
 				cY -= dYC;
 				if(cY<0)
 				{
@@ -139,13 +137,11 @@ public class CombatState extends BasicGameState
 			if(h.getY()+h.getHeight()>cY+camBound.getHeight()&&cY<HT-CAMHT)
 			{
 				cY += dYC;
-				System.out.print("Down");
 				if(cY+CAMHT>HT)
 				{
 					cY = HT-CAMHT;
 				}
 			}
-			System.out.println();
 		}
 		for(int x=0; x< entList.size(); x++)
 		{

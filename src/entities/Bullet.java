@@ -51,8 +51,8 @@ public class Bullet extends Entity
 		else
 		{
 			float del = (float)delta;
-			float xVel = (float)Math.cos(slope)*getSpeed()*del;
-			float yVel = (float)Math.sin(slope)*getSpeed()*del;
+			float xVel = (float)Math.cos(slope)*getSpd()*del;
+			float yVel = (float)Math.sin(slope)*getSpd()*del;
 			move(xVel, yVel);
 		}
 		

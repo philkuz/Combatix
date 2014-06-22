@@ -6,34 +6,26 @@ import org.newdawn.slick.geom.Rectangle;
 import combat.*;
 public class SimpleAI extends Default
 {
-	public float speed;
 	private float aV;//angular velocity
 	private int angleDir;
-	private float destX, destY, degree;
+	private float destX, destY;
 	private float destT;//destination angle
 	private float dx, dy, dT;
-	private float[] xA;
-	private float[] yA;
 	private boolean xbit, ybit;
 	private int shotRate = 1000;
 	private int curInt;
 	private boolean init;
-	private boolean test;
 	public SimpleAI() throws SlickException
 	{
 		super();
-		speed = 0.1f;
+		setSpd(0.1f);
 		aV = 0.0025f;
-		xA = new float[4];
-		yA = new float[4];
-		xA[0]=40;xA[1]=40;xA[2]=240;xA[3]=240;
-		yA[0]=40;yA[1]=240;yA[2]=40;yA[3]=240;
 		curInt = shotRate;
 		init = true;
-		test = true;
 	}
 	public void update(int delta) throws SlickException
 	{
+		super.update(delta);
 		randTurn(delta);
 		orient();
 		//default implementation
@@ -53,6 +45,7 @@ public class SimpleAI extends Default
 	//of lateral adj in Player.java. Extremely buggy and not in use.
 	public void randMove(int delta)
 	{
+		float degree =0;
 		if(init)
 		{
 			destX = getX();
@@ -60,7 +53,7 @@ public class SimpleAI extends Default
 			destT = getDir();
 			init = false;
 		}
-		float cur = speed*delta;
+		float cur = getSpd()*delta;
 		if(destX == getX() && destY == getY())
 		{
 			Rectangle bounds= CombatState.getBounderies();
@@ -71,12 +64,11 @@ public class SimpleAI extends Default
 			count = (count+1)%4;*/
 			float adj = destX-getCX();//x
 			float opp = destY-getCY();//y
-			float tan = (float)Math.atan(opp/adj);
+			degree = (float)Math.atan(opp/adj);
 			if(adj < 0)
 			{
-				tan = (float)Math.PI+tan;
+				degree += (float)Math.PI;
 			}
-			degree = tan;
 			if(destX>bounds.getX()+bounds.getWidth()-getWidth())
 			{
 				destX = bounds.getX()+bounds.getWidth()-getWidth();
@@ -135,34 +127,13 @@ public class SimpleAI extends Default
 				angleDir = 1;
 		}
 		dT = angleDir*aV*delta;
-		/*if((angleDir == 1 && (getDir()+ dT)%(2*Math.PI) > destT))
-		{
-			if(Math.abs(destT-getDir())>0.0425)
-			{
-				System.out.println("Jump--Dest: " +destT + " cur: "+getDir()+" dt: "+dT+ " CONDITION 1");
-
-			}
-			setDir(destT);
-			dT = 0;
-		}
-		else if((angleDir == -1 && (getDir()+ dT)%(2*Math.PI) < destT))
-		{
-			if(Math.abs(destT-getDir())>0.0425)
-			{
-				System.out.println("Jump--Dest: " +destT + " cur: "+getDir()+" dt: "+dT+ " CONDITION 2 ");
-
-			}
-			setDir(destT);
-			
-			dT = 0;
-		}*/
 		if(angle(getDir()-destT)<Math.abs(dT))
 		{
 			setDir(destT);
 			dT = 0;
 		}
 		turn(dT);
-		float spd = speed*delta;
+		float spd = getSpd()*delta;
 		move((float)Math.cos(getDir())*spd, (float)Math.sin(getDir())*spd);
 	}
 	public void drawTravel(Graphics g)
