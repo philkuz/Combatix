@@ -35,7 +35,7 @@ public class Hero extends Entity
 		attack = 10;
 		agility = 10;
 		defense = 10;
-		xp = 0;
+		xp = 10;
 		player = false;
 		colList = new ArrayList<Integer>();
 	}
@@ -69,9 +69,9 @@ public class Hero extends Entity
 	}
 	public void levelUp()
 	{
-		attack += 3;
-		agility += 3;
-		defense += 3;
+		attack += 1;
+		agility += 1;
+		defense += 1;
 		level += 1;
 	}
 	public Shape getBoundingBox()
@@ -104,7 +104,7 @@ public class Hero extends Entity
 	}
 	public float getSpd()
 	{
-		return agility*.025f;
+		return 0.2f + agility * .005f;
 	}
 	public float getXP()
 	{
@@ -118,9 +118,11 @@ public class Hero extends Entity
 		}
 		else
 		{
+			/*
 			int x = 1;
 			while(true)
 			{
+				int id = CombatState.search(colList.getCol)
 				Entity e = CombatState.entList.get(CombatState.search(colList.get(colList.size()-x)));
 				if(e.ofType("hero"))
 				{
@@ -133,6 +135,17 @@ public class Hero extends Entity
 					break;
 				}
 				x++;//has to be placed after the size check to make sure the loop isn't ended prematurely.
+			}*/
+			for(int y = colList.size()-1; y >= 0; y--)
+			{
+				int id = CombatState.search(colList.get(y));
+				Entity e = CombatState.entList.get(id);
+				if(e.ofType("hero"))
+				{
+					Hero h = (Hero)e;
+					h.addXp(xp);
+					break;
+				}
 			}
 			return false;
 		}

@@ -24,6 +24,7 @@ public class Player
 		lol = shotRate;
 		chill = false;
 		turnRate = 0.0075f;
+		hero.setHealth(0);
 	}
 	public Hero getHero()
 	{
@@ -52,10 +53,6 @@ public class Player
 			chill = true;
 		}
 		hero.orient();
-		if(!hero.isAlive())
-		{
-			System.out.println("death");
-		}
 	}
 	public void angleAdj(int delta, float spd)
 	{

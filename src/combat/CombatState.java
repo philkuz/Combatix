@@ -35,6 +35,7 @@ public class CombatState extends BasicGameState
 	public static Rectangle boundaries, camBound;
 	public float buf;
 	public static float cX, cY, dXC, dYC;//Camera location.
+	public Button mmenu, exit;
 	
 	public CombatState(int state)
 	{
@@ -66,6 +67,10 @@ public class CombatState extends BasicGameState
 		buf = 150;
 		boundaries = new Rectangle(border, border, WT-border*2, HT-border*2);
 		camBound = new Rectangle(buf,buf,CAMWT-buf*2, CAMHT-buf*2);
+		Image menu = new Image("data/mainmenu.png");
+		Image ex = new Image("data/exit.png");
+		mmenu = new Button(menu, (CAMWT-menu.getWidth()*2)/2, 250, 1);
+		exit = new Button(ex,(CAMWT-menu.getWidth()*2)/2+menu.getWidth(), 250,1);
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
@@ -90,6 +95,12 @@ public class CombatState extends BasicGameState
 		g.setColor(Color.green);
 		g.fill(new Rectangle(CAMWT-110, 45, pl.getHero().getHealthRatio()*80, 15));
 		
+		if(!pl.getHero().isAlive())
+		{	Image gameOver = new Image("data/GameOver.png");
+			gameOver.draw((CAMWT-gameOver.getWidth())/2, 100);
+			mmenu.draw();
+			exit.draw();
+		}
 		//g.draw(camBound);
 	}
 
@@ -107,7 +118,14 @@ public class CombatState extends BasicGameState
 		//Combination of hero and bullet list to enable collision detection from prolonged entities
 		//ie walls
 		Hero h = pl.getHero();
-		if(!h.getCamBox().intersects(camBound))
+		if(!pl.getHero().isAlive())
+		{
+			if(mmenu.hit())
+				sbg.enterState(Application.MAINMENU);
+			if(exit.hit())
+				System.exit(0);
+		}
+		if(!h.getCamBox().intersects(camBound)&&pl.getHero().isAlive())
 		{
 			float spd = h.getSpd()*delta;
 			dXC = (float)Math.cos(Math.PI/4)*spd;
@@ -169,7 +187,7 @@ public class CombatState extends BasicGameState
 	}
 	public static int entID()
 	{
-		if(unID.size() == 0)
+		/*if(unID.size() == 0)
 		{
 			return entList.size();
 		}
@@ -178,7 +196,8 @@ public class CombatState extends BasicGameState
 			int ret = unID.get(0);
 			unID.remove(0);
 			return ret;
-		}
+		}*/
+		return entList.size();
 	}
 	public static void addEnt(Entity e)
 	{
@@ -192,7 +211,7 @@ public class CombatState extends BasicGameState
 	public static void delEnt(Entity e)
 	{
 		entList.remove(e);
-		unID.add((Integer)e.getID());
+		//unID.add((Integer)e.getID());
 	}
 	public static Rectangle getBounderies()
 	{
@@ -229,7 +248,7 @@ public class CombatState extends BasicGameState
 		}
 		if(curID == id)
 		{
-			return id;
+			return idx;
 		}
 		else
 		{
