@@ -21,10 +21,10 @@ public class Player
 		hero.setX(20);
 		hero.setY(20);
 		hero.togglePlayer();
+		hero.setHealth(100);
 		lol = shotRate;
 		chill = false;
 		turnRate = 0.0075f;
-		hero.setHealth(0);
 	}
 	public Hero getHero()
 	{

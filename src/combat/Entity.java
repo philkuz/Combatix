@@ -73,7 +73,10 @@ public abstract class Entity
 	
 	public void draw()
 	{
-		img.draw(x-CombatState.cX,y-CombatState.cY);
+		if(getBoundingBox().intersects(CombatState.getCam()))
+		{
+			img.draw(x-CombatState.cX,y-CombatState.cY);
+		}
 	}
 	public void draw(float x, float y)
 	{
@@ -104,6 +107,8 @@ public abstract class Entity
 	{
 		return getY()-CombatState.getCY();
 	}
+	//getDir() gives a direction that doesn't seem to work with the image stuff
+	//use orient()
 	public float getDir()
 	{
 		return dir;

@@ -15,18 +15,22 @@ public class Hero extends Entity
 	private float maxHealth;
 	private float dif;
 	private boolean player;
+	private Image defImg;
 	private float attack;
 	private float agility;
 	private float defense;
 	private float xp;
 	private int level;
+	private int res = 0;
+	private boolean hit = false;
 	private ArrayList<Integer> colList;
 	
 	public Hero() throws SlickException
 	{
 		super();
 		setSpd(.25f);
-		setImg(new Image("data/neuron.png"));
+		defImg = new Image("data/neuron.png");
+		setDefImg(defImg);
 		setHealth(100);
 		maxHealth = 100;
 		setType("hero");
@@ -54,7 +58,7 @@ public class Hero extends Entity
 	}
 	public void checkXP()
 	{
-		if(xp>Math.pow(1.5, level)+9.5)
+		if(xp>Math.pow(1.5, level)*10)
 		{
 			levelUp();
 		}
@@ -62,6 +66,19 @@ public class Hero extends Entity
 	public void update(int delta) throws SlickException
 	{
 		checkXP();
+		if(hit)
+		{
+			if(res > 100)
+			{
+				hit = false;
+				setImg(getDefImg());
+				orient();
+			}
+			else
+			{
+				res+=delta;
+			}
+		}
 	}
 	public void drawTravel(Graphics g)
 	{
@@ -98,6 +115,10 @@ public class Hero extends Entity
 	{
 		return agility;
 	}
+	public Image getDefImg()
+	{
+		return defImg;
+	}
 	public int getLevel()
 	{
 		return level;
@@ -110,6 +131,14 @@ public class Hero extends Entity
 	{
 		return xp;
 	}
+	public void hurt() throws SlickException
+	{
+		res = 0;
+		hit = true;
+		Image hit = new Image("data/heroH.png");
+		setImg(hit);
+		orient();
+	}
 	public boolean isAlive()
 	{
 		if(getHealth()> 0)
@@ -118,33 +147,20 @@ public class Hero extends Entity
 		}
 		else
 		{
-			/*
-			int x = 1;
-			while(true)
-			{
-				int id = CombatState.search(colList.getCol)
-				Entity e = CombatState.entList.get(CombatState.search(colList.get(colList.size()-x)));
-				if(e.ofType("hero"))
-				{
-					Hero h = (Hero)e;
-					h.addXp(xp);
-					break;
-				}
-				if(x == colList.size())
-				{
-					break;
-				}
-				x++;//has to be placed after the size check to make sure the loop isn't ended prematurely.
-			}*/
 			for(int y = colList.size()-1; y >= 0; y--)
 			{
 				int id = CombatState.search(colList.get(y));
-				Entity e = CombatState.entList.get(id);
-				if(e.ofType("hero"))
+				if(id >= 0)
 				{
-					Hero h = (Hero)e;
-					h.addXp(xp);
-					break;
+					Entity e = CombatState.entList.get(id);
+					if(e.ofType("hero"))
+					{
+						Hero h = (Hero)e;
+						if(h.player)
+							System.out.println("Increase of XP " + xp);
+						h.addXp(xp);
+						break;
+					}
 				}
 			}
 			return false;
@@ -159,6 +175,11 @@ public class Hero extends Entity
 	public void setDif(float differ)
 	{
 		this.dif = differ;
+	}
+	public void setDefImg(Image img)
+	{
+		setImg(img);
+		defImg = img;
 	}
 	public void setAtk(float atk)
 	{

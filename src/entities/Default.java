@@ -10,7 +10,7 @@ public class Default extends Hero
 	public Default() throws SlickException
 	{
 		super();
-		this.setImg(new Image("data/hero.png"));
+		this.setDefImg(new Image("data/hero.png"));
 	}
 	public void attack() throws SlickException
 	{

@@ -8,18 +8,18 @@ import org.newdawn.slick.geom.Rectangle;
 
 public class Button 
 {
-	private Image look;
+	private Image img;
 	private float x;
 	private float y;
 	private float width;
 	private float height;
-	public Button(Image img, float x, float y, float scale)
+	public Button(Image img, float x, float y)
 	{
-		look = img.getScaledCopy(scale);
+		this.img = img;
 		this.x=x;
 		this.y=y;
-		this.width = look.getWidth();
-		this.height = look.getHeight();
+		this.width = img.getWidth();
+		this.height = img.getHeight();
 	}
 	
 	public Button(float x, float y, float width, float height)
@@ -49,7 +49,23 @@ public class Button
 	}
 	public void draw()
 	{
-		look.draw(x,y);
+		img.draw(x,y);
+	}
+	public float getX()
+	{
+		return x;
+	}
+	public float getY()
+	{
+		return y;
+	}
+	public float getWidth()
+	{
+		return width; 
+	}
+	public float getHeight()
+	{
+		return height;
 	}
 	public void draw(Graphics g)
 	{

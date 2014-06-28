@@ -9,10 +9,11 @@ import org.newdawn.slick.state.*;
 public class Application extends StateBasedGame
 {
 	public static final int MAINMENU = 0;
+	public static final int COMBAT = 1;
+	public static final int MENU = 2;
 	public static final int WIDTH = 720;
 	public static final int HEIGHT = 480;
 	public static final int FPS = 60;
-	public static final int COMBAT = 1;
 	
 	public Application(String appName)
 	{
@@ -21,8 +22,9 @@ public class Application extends StateBasedGame
 
 	public void initStatesList(GameContainer arg0) throws SlickException 
 	{
+		this.addState(new MainMenuState(MAINMENU));
 		this.addState(new CombatState(COMBAT));
-		this.addState(new MenuState(MAINMENU));
+		this.addState(new MenuState(MENU));
 	}
 	public static void main(String[] args)
 	{

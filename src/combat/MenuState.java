@@ -2,42 +2,56 @@ package combat;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 public class MenuState extends BasicGameState
 {
-	public MenuState(int id)
+	private int id;
+	public Button menuB, exitB, restartB;
+	public MenuState(int id )
 	{
-		
-	}
-	@Override
-	public void init(GameContainer arg0, StateBasedGame arg1)
-			throws SlickException {
-		// TODO Auto-generated method stub
-		
+		this.id = id;
 	}
 
-	@Override
-	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g)
-			throws SlickException {
-		g.draw(new Rectangle(10,10,100,100));
-		
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException
+	{
+		Image menu = new Image("data/mainmenu.png");
+		Image ex = new Image("data/exit.png");
+		Image restart = new Image("data/exit.png");
+		restartB = new Button(restart, CombatState.CAMWT/2-restart.getWidth()/2,200); 
+		menuB = new Button(menu, CombatState.CAMWT/2-menu.getWidth()/2, restartB.getY()+restartB.getHeight());
+		exitB = new Button(ex,CombatState.CAMWT/2-ex.getWidth()/2, menuB.getY()+menuB.getHeight());
 	}
 
-	@Override
-	public void update(GameContainer arg0, StateBasedGame arg1, int arg2)
-			throws SlickException {
-		// TODO Auto-generated method stub
-		
+	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException
+	{
+		Image gameOver = new Image("data/GameOver.png");
+		gameOver.draw((CombatState.CAMWT-gameOver.getWidth())/2, 75);
+		menuB.draw();
+		exitB.draw();
+		restartB.draw();
 	}
 
-	@Override
-	public int getID() {
-		// TODO Auto-generated method stub
-		return 0;
+	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException
+	{
+		if(menuB.hit())
+			sbg.enterState(Application.MAINMENU, new FadeOutTransition(), new FadeInTransition());
+		if(exitB.hit())
+			System.exit(0);
+		if(restartB.hit())
+		{
+			((CombatState) sbg.getState(Application.COMBAT)).start();
+			sbg.enterState(Application.COMBAT, new FadeOutTransition(), new FadeInTransition());
+		}
 	}
 
+	public int getID()
+	{
+		return id;
+	}
 }

@@ -40,8 +40,10 @@ public class Bullet extends Entity
 		if(e.ofType("hero"))
 		{
 			e.setHealth(e.getHealth()-strength);
-			System.out.println(e.getHealth());
 			((Hero)e).addCol(source);
+			try {
+				((Hero)e).hurt();
+			} catch (SlickException e1) {}
 		}
 		delete();
 	}

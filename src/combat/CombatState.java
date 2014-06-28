@@ -10,8 +10,11 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import entities.*;
 
@@ -28,49 +31,22 @@ public class CombatState extends BasicGameState
 	public Image img;
 	int state;
 	public static float mseX, mseY;
-	public static ArrayList<Integer> unID;//unused IDs
 	public static ArrayList<Entity> entList;
 	public Player pl;
 	public static float bgX, bgY;
 	public static Rectangle boundaries, camBound;
 	public float buf;
 	public static float cX, cY, dXC, dYC;//Camera location.
-	public Button mmenu, exit;
+	
 	
 	public CombatState(int state)
 	{
 		this.state = state;
-		unID = new ArrayList<Integer>();
-		entList = new ArrayList<Entity>();
+		
 	}
-	
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException 
 	{
-		pl = new Player();
-		mseX = 0;
-		mseY = 0;
-		Background bg = new Background();
-		addEnt(bg);
-		WT = bg.getWidth();
-		HT = bg.getHeight();
-		for(int x = 0; x < 15; x++)
-		{
-			SimpleAI l = new SimpleAI();
-			l.setLoc((float)Math.random()*WT, (float)Math.random()*HT);
-			addEnt(l);
-		}
-		addEnt(pl.getHero());
-				
-		border = 10;
-		bgX = 0;
-		bgY = 0;
-		buf = 150;
-		boundaries = new Rectangle(border, border, WT-border*2, HT-border*2);
-		camBound = new Rectangle(buf,buf,CAMWT-buf*2, CAMHT-buf*2);
-		Image menu = new Image("data/mainmenu.png");
-		Image ex = new Image("data/exit.png");
-		mmenu = new Button(menu, (CAMWT-menu.getWidth()*2)/2, 250, 1);
-		exit = new Button(ex,(CAMWT-menu.getWidth()*2)/2+menu.getWidth(), 250,1);
+		start();
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
@@ -79,6 +55,7 @@ public class CombatState extends BasicGameState
 		pl.draw();
 		for(Entity e: entList)
 		{
+			
 			e.draw();
 			//g.drawString(""+e.getHealth(), e.getCamX(), e.getCamY());
 		}
@@ -95,12 +72,6 @@ public class CombatState extends BasicGameState
 		g.setColor(Color.green);
 		g.fill(new Rectangle(CAMWT-110, 45, pl.getHero().getHealthRatio()*80, 15));
 		
-		if(!pl.getHero().isAlive())
-		{	Image gameOver = new Image("data/GameOver.png");
-			gameOver.draw((CAMWT-gameOver.getWidth())/2, 100);
-			mmenu.draw();
-			exit.draw();
-		}
 		//g.draw(camBound);
 	}
 
@@ -120,10 +91,7 @@ public class CombatState extends BasicGameState
 		Hero h = pl.getHero();
 		if(!pl.getHero().isAlive())
 		{
-			if(mmenu.hit())
-				sbg.enterState(Application.MAINMENU);
-			if(exit.hit())
-				System.exit(0);
+			sbg.enterState(Application.MENU, new FadeOutTransition(), new FadeInTransition());
 		}
 		if(!h.getCamBox().intersects(camBound)&&pl.getHero().isAlive())
 		{
@@ -163,6 +131,7 @@ public class CombatState extends BasicGameState
 					cY = HT-CAMHT;
 				}
 			}
+			
 		}
 		for(int x=0; x< entList.size(); x++)
 		{
@@ -185,18 +154,31 @@ public class CombatState extends BasicGameState
 	{
 		return state;
 	}
+	public void start() throws SlickException
+	{
+		pl = new Player();
+		entList = new ArrayList<Entity>();
+		Background bg = new Background();
+		addEnt(bg);
+		WT = bg.getWidth();
+		HT = bg.getHeight();
+		for(int x = 0; x < 50; x++)
+		{
+			SimpleAI l = new SimpleAI();
+			l.setLoc((float)Math.random()*WT, (float)Math.random()*HT);
+			addEnt(l);
+		}
+		addEnt(pl.getHero());
+				
+		border = 10;
+		bgX = 0;
+		bgY = 0;
+		buf = 150;
+		boundaries = new Rectangle(border, border, WT-border*2, HT-border*2);
+		camBound = new Rectangle(buf,buf,CAMWT-buf*2, CAMHT-buf*2);
+	}
 	public static int entID()
 	{
-		/*if(unID.size() == 0)
-		{
-			return entList.size();
-		}
-		else
-		{
-			int ret = unID.get(0);
-			unID.remove(0);
-			return ret;
-		}*/
 		return entList.size();
 	}
 	public static void addEnt(Entity e)
@@ -254,5 +236,10 @@ public class CombatState extends BasicGameState
 		{
 			return -1;
 		}
+	}
+	public static Shape getCam()
+	{
+		Rectangle r = new Rectangle(cX, cY, CAMWT, CAMHT);
+		return r;
 	}
 }
