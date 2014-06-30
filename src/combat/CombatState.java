@@ -21,8 +21,8 @@ import entities.*;
 public class CombatState extends BasicGameState
 {
 	//HT and WT are the dimensions of the "world" CAMHT and CAMWT are the camera dimensions
-	public static float HT = Application.HEIGHT*4;
-	public static float WT = Application.WIDTH*4;
+	public static float HT = Application.HEIGHT*2;
+	public static float WT = Application.WIDTH*2;
 	final public static float CAMHT = Application.HEIGHT;
 	final public static float CAMWT = Application.WIDTH;
 	
@@ -37,6 +37,7 @@ public class CombatState extends BasicGameState
 	public static Rectangle boundaries, camBound;
 	public float buf;
 	public static float cX, cY, dXC, dYC;//Camera location.
+	public static int enemies;
 	
 	
 	public CombatState(int state)
@@ -46,6 +47,7 @@ public class CombatState extends BasicGameState
 	}
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException 
 	{
+		enemies = 0;
 		start();
 	}
 
@@ -55,24 +57,26 @@ public class CombatState extends BasicGameState
 		pl.draw();
 		for(Entity e: entList)
 		{
-			
 			e.draw();
-			//g.drawString(""+e.getHealth(), e.getCamX(), e.getCamY());
 		}
 		g.setColor(Color.gray);
-		g.fill(new Rectangle(CAMWT-120,20, 100,105));
+		g.fill(new Rectangle(CAMWT-120,20, 100,120));
+		
 		g.setColor(Color.white);
 		g.drawString("Level: "+pl.getHero().getLevel(), CAMWT-110, 25);
 		g.drawString("XP: "+pl.getHero().getXP(), CAMWT-110, 60);
 		g.drawString("Atk: "+pl.getHero().getAtk(), CAMWT-110, 75);
 		g.drawString("Agl: "+pl.getHero().getAgl(), CAMWT-110, 90);
 		g.drawString("Def: "+pl.getHero().getDef(), CAMWT-110, 105);
+		g.drawString("Left?: "+ enemies, CAMWT-110, 120);
 		g.setColor(Color.red);
 		g.fill(new Rectangle(CAMWT-110, 45,80, 15));
 		g.setColor(Color.green);
 		g.fill(new Rectangle(CAMWT-110, 45, pl.getHero().getHealthRatio()*80, 15));
-		
+		g.setColor(Color.white);
+		g.drawString(pl.getHero().getHealth()+"/"+pl.getHero().getMaxHealth(), CAMWT-110, 45);
 		//g.draw(camBound);
+		miniMap(g);
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException 
@@ -93,11 +97,18 @@ public class CombatState extends BasicGameState
 		{
 			sbg.enterState(Application.MENU, new FadeOutTransition(), new FadeInTransition());
 		}
+		int mult = 0;
+		if(input.isKeyPressed(Input.KEY_Q))
+		{
+			mult = (mult+1)%8;
+		}
 		if(!h.getCamBox().intersects(camBound)&&pl.getHero().isAlive())
 		{
 			float spd = h.getSpd()*delta;
-			dXC = (float)Math.cos(Math.PI/4)*spd;
-			dYC = (float)Math.sin(Math.PI/4)*spd;
+			//dXC = (float)(Math.cos(h.getDir())+Math.PI/8*mult)*spd;
+			//dYC = (float)(Math.sin(h.getDir())+Math.PI/8*mult)*spd;
+			dXC = ((float)Math.cos(Math.PI/4)-0.01f)*spd;
+			dYC = ((float)Math.sin(Math.PI/4)-0.01f)*spd;
 			//System.out.println("true");
 			if(h.getX()<cX+buf&&cX>0)
 			{
@@ -156,20 +167,23 @@ public class CombatState extends BasicGameState
 	}
 	public void start() throws SlickException
 	{
+		enemies = 0;
 		pl = new Player();
 		entList = new ArrayList<Entity>();
 		Background bg = new Background();
 		addEnt(bg);
 		WT = bg.getWidth();
 		HT = bg.getHeight();
-		for(int x = 0; x < 50; x++)
+		for(int x = 0; x < 100; x++)
 		{
+			System.out.println(enemies);
 			SimpleAI l = new SimpleAI();
-			l.setLoc((float)Math.random()*WT, (float)Math.random()*HT);
+			l.setLoc((float)Math.random()*(WT-l.getWidth()), (float)Math.random()*(HT-l.getHeight()));
 			addEnt(l);
 		}
 		addEnt(pl.getHero());
-				
+		cX = 0;
+		cY = 0;
 		border = 10;
 		bgX = 0;
 		bgY = 0;
@@ -180,6 +194,21 @@ public class CombatState extends BasicGameState
 	public static int entID()
 	{
 		return entList.size();
+	}
+	public static void miniMap(Graphics g)
+	{
+		float mmW = 200;
+		float mmH = mmW*9/16;
+		float mmX = 10;
+		float mmY = CAMHT-(10+mmH);
+		
+		float scale = mmW/WT;
+		for(Entity e: entList)
+		{
+			e.draw(e.getX()*scale+mmX, e.getY()*scale+mmY, scale);
+		}
+		Rectangle r= new Rectangle(cX*scale+mmX, cY*scale+mmY, CAMWT*scale, CAMHT*scale);
+		g.draw(r);
 	}
 	public static void addEnt(Entity e)
 	{
@@ -204,7 +233,7 @@ public class CombatState extends BasicGameState
 	{
 		return cX;
 	}
-	//Camera y coordiante, not to be confused with center coordinate
+	//Camera y coordinate, not to be confused with center coordinate
 	public static float getCY()
 	{
 		return cY;

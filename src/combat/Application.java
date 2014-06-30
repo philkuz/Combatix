@@ -11,8 +11,8 @@ public class Application extends StateBasedGame
 	public static final int MAINMENU = 0;
 	public static final int COMBAT = 1;
 	public static final int MENU = 2;
-	public static final int WIDTH = 720;
-	public static final int HEIGHT = 480;
+	public static final int WIDTH = 1280;
+	public static final int HEIGHT = 720;
 	public static final int FPS = 60;
 	
 	public Application(String appName)

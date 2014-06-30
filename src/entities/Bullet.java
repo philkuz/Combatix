@@ -17,7 +17,19 @@ public class Bullet extends Entity
 	
 	public Bullet(float m, float x, float y, float attack, int src) throws SlickException
 	{
-		setImg((new Image("data/neuron.png")).getScaledCopy(.2f));
+		boolean fluh = false;
+		while(!fluh)
+		{
+			try
+			{
+				setImg((new Image("data/neuron.png").getScaledCopy(.2f)));
+				fluh = true;
+			}
+			catch(RuntimeException e)
+			{
+				fluh = false;
+			}
+		}
 		setX(x-getWidth()/2);
 		setY(y-getHeight()/2);
 		this.slope = m;

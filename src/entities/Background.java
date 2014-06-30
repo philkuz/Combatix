@@ -11,7 +11,7 @@ public class Background extends Entity
 	public Background() throws SlickException
 	{
 		super();
-		setImg(new Image("data/background.jpg").getScaledCopy((int)CombatState.WT, (int)CombatState.HT));
+		setImg(new Image("data/tiledbg.jpg").getScaledCopy((int)CombatState.WT, (int)CombatState.HT));
 	}
 	public Shape getBoundingBox()
 	{

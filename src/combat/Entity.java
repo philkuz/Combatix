@@ -78,9 +78,9 @@ public abstract class Entity
 			img.draw(x-CombatState.cX,y-CombatState.cY);
 		}
 	}
-	public void draw(float x, float y)
+	public void draw(float x, float y, float scale)
 	{
-		img.draw(x, y);
+		img.getScaledCopy(scale).draw(x, y);
 	}
 	public Shape getBoundingBox()
 	{

@@ -12,7 +12,6 @@ import org.newdawn.slick.geom.Shape;
 
 public class Hero extends Entity
 {
-	private float maxHealth;
 	private float dif;
 	private boolean player;
 	private Image defImg;
@@ -32,7 +31,6 @@ public class Hero extends Entity
 		defImg = new Image("data/neuron.png");
 		setDefImg(defImg);
 		setHealth(100);
-		maxHealth = 100;
 		setType("hero");
 		dif = 10;
 		level = 1;
@@ -90,6 +88,7 @@ public class Hero extends Entity
 		agility += 1;
 		defense += 1;
 		level += 1;
+		setHealth(getHealth()+10);
 	}
 	public Shape getBoundingBox()
 	{
@@ -97,11 +96,11 @@ public class Hero extends Entity
 	}
 	public float getMaxHealth()
 	{
-		return maxHealth;
+		return 10*defense;
 	}
 	public float getHealthRatio()
 	{
-		return getHealth()/maxHealth;
+		return getHealth()/getMaxHealth();
 	}
 	public float getAtk()
 	{
@@ -125,7 +124,7 @@ public class Hero extends Entity
 	}
 	public float getSpd()
 	{
-		return 0.2f + agility * .005f;
+		return 0.2f + agility * .01f;
 	}
 	public float getXP()
 	{
@@ -147,6 +146,7 @@ public class Hero extends Entity
 		}
 		else
 		{
+			CombatState.enemies--;
 			for(int y = colList.size()-1; y >= 0; y--)
 			{
 				int id = CombatState.search(colList.get(y));
