@@ -1,5 +1,6 @@
 package combat;
 
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
@@ -21,6 +22,8 @@ public class Player
 		hero.setX(20);
 		hero.setY(20);
 		hero.togglePlayer();
+		hero.setDefImg(new Image("data/player.png").getScaledCopy(hero.getImg().getHeight(), hero.getImg().getWidth()));
+		hero.setHitImg(new Image("data/playerH.png").getScaledCopy(hero.getImg().getHeight(), hero.getImg().getWidth()));
 		hero.setHealth(100);
 		lol = shotRate;
 		chill = false;

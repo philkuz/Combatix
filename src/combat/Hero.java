@@ -14,7 +14,7 @@ public class Hero extends Entity
 {
 	private float dif;
 	private boolean player;
-	private Image defImg;
+	private Image defImg, hitImg;
 	private float attack;
 	private float agility;
 	private float defense;
@@ -29,6 +29,7 @@ public class Hero extends Entity
 		super();
 		setSpd(.25f);
 		defImg = new Image("data/neuron.png");
+		hitImg = new Image("data/heroH.png");
 		setDefImg(defImg);
 		setHealth(100);
 		setType("hero");
@@ -134,8 +135,7 @@ public class Hero extends Entity
 	{
 		res = 0;
 		hit = true;
-		Image hit = new Image("data/heroH.png");
-		setImg(hit);
+		setImg(hitImg);
 		orient();
 	}
 	public boolean isAlive()
@@ -199,5 +199,9 @@ public class Hero extends Entity
 			player = false;
 		else
 			player = true;
+	}
+	public void setHitImg(Image image)
+	{
+		hitImg = image;
 	}
 }
