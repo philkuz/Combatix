@@ -29,6 +29,7 @@ public class CombatState extends BasicGameState
 	public static float border;
 	public Image bg;
 	public Image img;
+	public Image fog;
 	int state;
 	public static float mseX, mseY;
 	public static ArrayList<Entity> entList;
@@ -38,6 +39,7 @@ public class CombatState extends BasicGameState
 	public float buf;
 	public static float cX, cY, dXC, dYC;//Camera location.
 	public static int enemies;
+	public boolean flog;
 	
 	
 	public CombatState(int state)
@@ -49,6 +51,8 @@ public class CombatState extends BasicGameState
 	{
 		enemies = 0;
 		start();
+		flog = false;
+		fog = new Image("data/Player/fog.png");
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException 
@@ -59,6 +63,8 @@ public class CombatState extends BasicGameState
 		{
 			e.draw();
 		}
+		if(flog)
+			fog.draw(pl.getX()-cX-fog.getWidth()/2/*-pl.getHero().getWidth()/2*/,pl.getY()-cY-fog.getHeight()/2/*-pl.getHero().getHeight()/2*/);
 		g.setColor(Color.gray);
 		g.fill(new Rectangle(CAMWT-120,20, 100,120));
 		
@@ -89,19 +95,54 @@ public class CombatState extends BasicGameState
 		{
 			Entity e = entList.get(x);
 			e.update(delta);
-		}		
-		//Combination of hero and bullet list to enable collision detection from prolonged entities
-		//ie walls
-		Hero h = pl.getHero();
+		}
+		//Allows transition towards death screen.
 		if(!pl.getHero().isAlive())
 		{
 			sbg.enterState(Application.MENU, new FadeOutTransition(), new FadeInTransition());
 		}
-		int mult = 0;
-		if(input.isKeyPressed(Input.KEY_Q))
+		if(input.isKeyPressed(Input.KEY_Y))
 		{
-			mult = (mult+1)%8;
+			flog = !flog;
 		}
+		camControl(delta);
+		collisionCheck();
+	}
+
+	public int getID() 
+	{
+		return state;
+	}
+	public void start() throws SlickException
+	{
+		enemies = 0;
+		pl = new Player();
+		entList = new ArrayList<Entity>();
+		Background bg = new Background();
+		addEnt(bg);
+		WT = bg.getWidth();
+		HT = bg.getHeight();
+		/*
+		for(int x = 0; x < 100; x++)
+		{
+			System.out.println(enemies);
+			SimpleAI l = new SimpleAI();
+			l.setLoc((float)Math.random()*(WT-l.getWidth()), (float)Math.random()*(HT-l.getHeight()));
+			addEnt(l);
+		}*/
+		addEnt(pl.getHero());
+		cX = 0;
+		cY = 0;
+		border = 10;
+		bgX = 0;
+		bgY = 0;
+		buf = 150;
+		boundaries = new Rectangle(border, border, WT-border*2, HT-border*2);
+		camBound = new Rectangle(buf,buf,CAMWT-buf*2, CAMHT-buf*2);
+	}
+	public void camControl(int delta)
+	{
+		Hero h = pl.getHero();
 		if(!h.getCamBox().intersects(camBound)&&pl.getHero().isAlive())
 		{
 			float spd = h.getSpd()*delta;
@@ -144,6 +185,9 @@ public class CombatState extends BasicGameState
 			}
 			
 		}
+	}
+	public void collisionCheck()
+	{
 		for(int x=0; x< entList.size(); x++)
 		{
 			Entity e = entList.get(x);
@@ -159,37 +203,6 @@ public class CombatState extends BasicGameState
 				}
 			}
 		}
-	}
-
-	public int getID() 
-	{
-		return state;
-	}
-	public void start() throws SlickException
-	{
-		enemies = 0;
-		pl = new Player();
-		entList = new ArrayList<Entity>();
-		Background bg = new Background();
-		addEnt(bg);
-		WT = bg.getWidth();
-		HT = bg.getHeight();
-		for(int x = 0; x < 100; x++)
-		{
-			System.out.println(enemies);
-			SimpleAI l = new SimpleAI();
-			l.setLoc((float)Math.random()*(WT-l.getWidth()), (float)Math.random()*(HT-l.getHeight()));
-			addEnt(l);
-		}
-		addEnt(pl.getHero());
-		cX = 0;
-		cY = 0;
-		border = 10;
-		bgX = 0;
-		bgY = 0;
-		buf = 150;
-		boundaries = new Rectangle(border, border, WT-border*2, HT-border*2);
-		camBound = new Rectangle(buf,buf,CAMWT-buf*2, CAMHT-buf*2);
 	}
 	public static int entID()
 	{

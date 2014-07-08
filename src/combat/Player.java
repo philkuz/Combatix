@@ -22,8 +22,8 @@ public class Player
 		hero.setX(20);
 		hero.setY(20);
 		hero.togglePlayer();
-		hero.setDefImg(new Image("data/player.png").getScaledCopy(hero.getImg().getHeight(), hero.getImg().getWidth()));
-		hero.setHitImg(new Image("data/playerH.png").getScaledCopy(hero.getImg().getHeight(), hero.getImg().getWidth()));
+		hero.setDefImg(new Image("data/hero.png").getScaledCopy(hero.getImg().getHeight(), hero.getImg().getWidth()));
+		hero.setHitImg(new Image("data/hero.png").getScaledCopy(hero.getImg().getHeight(), hero.getImg().getWidth()));
 		hero.setHealth(100);
 		lol = shotRate;
 		chill = false;
