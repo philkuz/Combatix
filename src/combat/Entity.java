@@ -13,6 +13,7 @@ public abstract class Entity
 	
 	private int id;
 	private float x,y;
+	private float dx, dy;
 	private float health;
 	private float speed;
 	private Shape boundingBox;
@@ -26,6 +27,8 @@ public abstract class Entity
 		id = -1;
 		type = new ArrayList<String>();
 		setType("entity");
+		dx = 0;
+		dy = 0;
 	}
 	public void collision(Entity e)
 	{
@@ -62,9 +65,9 @@ public abstract class Entity
 	{
 		dir+=deg;
 	}
-	public void update(int delta) throws SlickException
+	public void update(int delta)
 	{
-		
+		move(dx, dy);
 	}
 	public void orient()
 	{
@@ -112,6 +115,14 @@ public abstract class Entity
 	public float getDir()
 	{
 		return dir;
+	}
+	public float getDX()
+	{
+		return dx;
+	}
+	public float getDY()
+	{
+		return dy;
 	}
 	public float getMseDir()
 	{
@@ -172,6 +183,14 @@ public abstract class Entity
 	public void setDir(float dir)
 	{
 		this.dir = dir;
+	}
+	public void setDX(float dx)
+	{
+		this.dx = dx;
+	}
+	public void setDY(float dy)
+	{
+		this.dy = dy;
 	}
 	public void setLoc(float x, float y)
 	{

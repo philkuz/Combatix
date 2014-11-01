@@ -62,7 +62,7 @@ public class Hero extends Entity
 			levelUp();
 		}
 	}
-	public void update(int delta) throws SlickException
+	public void update(int delta) 
 	{
 		checkXP();
 		if(hit)
@@ -78,6 +78,8 @@ public class Hero extends Entity
 				res+=delta;
 			}
 		}
+		super.update(delta);
+
 	}
 	public void drawTravel(Graphics g)
 	{
@@ -93,7 +95,7 @@ public class Hero extends Entity
 	}
 	public Shape getBoundingBox()
 	{
-		return new Rectangle(getX()+dif, getY()+dif, getWidth()-dif, getHeight()-dif);
+		return new Rectangle(getX(), getY(), getWidth(), getHeight());
 	}
 	public float getMaxHealth()
 	{

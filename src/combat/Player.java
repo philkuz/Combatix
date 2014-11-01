@@ -22,8 +22,8 @@ public class Player
 		hero.setX(20);
 		hero.setY(20);
 		hero.togglePlayer();
-		hero.setDefImg(new Image("data/hero.png").getScaledCopy(hero.getImg().getHeight(), hero.getImg().getWidth()));
-		hero.setHitImg(new Image("data/hero.png").getScaledCopy(hero.getImg().getHeight(), hero.getImg().getWidth()));
+		hero.setDefImg(new Image("data/player.png").getScaledCopy(hero.getImg().getHeight()+50, hero.getImg().getWidth()+50));
+		hero.setHitImg(new Image("data/playerH.png").getScaledCopy(hero.getImg().getHeight(), hero.getImg().getWidth()));
 		hero.setHealth(100);
 		lol = shotRate;
 		chill = false;
@@ -62,11 +62,20 @@ public class Player
 		//angled movement implementation
 		if(ipt.isKeyDown(Input.KEY_UP))
 		{
-			hero.move((float)Math.cos(hero.getDir())*spd, (float)Math.sin(hero.getDir())*spd);
+			//hero.move((float)Math.cos(hero.getDir())*spd, (float)Math.sin(hero.getDir())*spd);
+			hero.setDX((float)Math.cos(hero.getDir())*spd);
+			hero.setDY((float)Math.sin(hero.getDir())*spd);
 		}
-		if(ipt.isKeyDown(Input.KEY_DOWN))
+		else if(ipt.isKeyDown(Input.KEY_DOWN))
 		{
-			hero.move(-(float)Math.cos(hero.getDir())*spd, -(float)Math.sin(hero.getDir())*spd);
+			//hero.move(-(float)Math.cos(hero.getDir())*spd, -(float)Math.sin(hero.getDir())*spd);
+			hero.setDX(-(float)Math.cos(hero.getDir())*spd);
+			hero.setDY(-(float)Math.sin(hero.getDir())*spd);
+		}
+		else
+		{
+			hero.setDX(0);
+			hero.setDY(0);
 		}
 		if(ipt.isKeyDown(Input.KEY_RIGHT))
 		{

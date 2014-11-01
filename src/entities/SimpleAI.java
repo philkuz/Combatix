@@ -23,7 +23,7 @@ public class SimpleAI extends Default
 		curInt = shotRate;
 		init = true;
 	}
-	public void update(int delta) throws SlickException
+	public void update(int delta)
 	{
 		super.update(delta);
 		randTurn(delta);
@@ -35,7 +35,10 @@ public class SimpleAI extends Default
 		}
 		if(curInt >= shotRate)
 		{
-			attack();
+			try
+			{
+				attack();
+			} catch (SlickException e){}
 			curInt = 0;
 		}
 		else

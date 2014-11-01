@@ -122,15 +122,15 @@ public class CombatState extends BasicGameState
 		addEnt(bg);
 		WT = bg.getWidth();
 		HT = bg.getHeight();
-		/*
-		for(int x = 0; x < 100; x++)
+		for(int x = 0; x < 10; x++)
 		{
 			System.out.println(enemies);
 			SimpleAI l = new SimpleAI();
 			l.setLoc((float)Math.random()*(WT-l.getWidth()), (float)Math.random()*(HT-l.getHeight()));
 			addEnt(l);
-		}*/
+		}
 		addEnt(pl.getHero());
+		//addEnt(new Barrier(150,150,(new Image("data/Player/stand.png").getScaledCopy(50,50))));
 		cX = 0;
 		cY = 0;
 		border = 10;
@@ -214,7 +214,8 @@ public class CombatState extends BasicGameState
 		float mmH = mmW*9/16;
 		float mmX = 10;
 		float mmY = CAMHT-(10+mmH);
-		
+		float brd = 5;
+		g.fillRect(mmX-brd, mmY-brd, mmW+2*brd, mmH+2*brd);
 		float scale = mmW/WT;
 		for(Entity e: entList)
 		{
@@ -222,6 +223,7 @@ public class CombatState extends BasicGameState
 		}
 		Rectangle r= new Rectangle(cX*scale+mmX, cY*scale+mmY, CAMWT*scale, CAMHT*scale);
 		g.draw(r);
+		
 	}
 	public static void addEnt(Entity e)
 	{

@@ -71,7 +71,9 @@ public class Bullet extends Entity
 			float del = (float)delta;
 			float xVel = (float)Math.cos(slope)*getSpd()*del;
 			float yVel = (float)Math.sin(slope)*getSpd()*del;
-			move(xVel, yVel);
+			setDX(xVel);
+			setDY(yVel);
+			super.update(delta);
 		}
 		
 	}
